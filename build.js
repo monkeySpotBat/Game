@@ -2,7 +2,6 @@ import { execSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 
-
 // Kompiliere den Server-Code für Vercel-Deployment
 console.log('Erstelle Server-Build für Vercel...');
 execSync('esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist', { 
