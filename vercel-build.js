@@ -10,8 +10,8 @@ if (fs.existsSync(indexPath)) {
   
   // Replace the problematic path
   indexContent = indexContent.replace(
-    '<script type="module" src="./src/main.tsx"></script>',
-    '<script type="module" src="./src/main.tsx"></script>'
+    '<script type="module" src="src/main.tsx"></script>',
+    '<script type="module" src="/src/main.tsx"></script>'
   );
   
   fs.writeFileSync(indexPath, indexContent);
