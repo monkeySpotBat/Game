@@ -8,7 +8,7 @@ const indexPath = path.resolve('./client/index.html');
 if (fs.existsSync(indexPath)) {
   let indexContent = fs.readFileSync(indexPath, 'utf8');
   
-  // Replace the problematic path
+  // Replace the problematic path with the correct one for Vercel
   indexContent = indexContent.replace(
     '<script type="module" src="src/main.tsx"></script>',
     '<script type="module" src="/src/main.tsx"></script>'
@@ -21,9 +21,33 @@ if (fs.existsSync(indexPath)) {
 // Step 2: Run Vite build with specific base path
 console.log('Running Vite build with correct base path...');
 try {
-  execSync('vite build --base=./ --outDir=dist/public', { 
+  // Erzeuge eine temporäre vite.config.vercel.js speziell für den Build
+  const viteConfigContent = `
+    import { defineConfig } from "vite";
+    import react from "@vitejs/plugin-react";
+    import path from "path";
+    
+    export default defineConfig({
+      plugins: [react()],
+      root: path.resolve("./client"),
+      base: "/",
+      build: {
+        outDir: path.resolve("./dist/public"),
+        emptyOutDir: true,
+      },
+      assetsInclude: ["**/*.gltf", "**/*.glb", "**/*.mp3", "**/*.ogg", "**/*.wav"],
+    });
+  `;
+  
+  fs.writeFileSync('vite.config.vercel.js', viteConfigContent);
+  
+  // Führe den Vite-Build mit der speziellen Konfiguration aus
+  execSync('vite build --config vite.config.vercel.js', { 
     stdio: 'inherit'
   });
+  
+  // Lösche die temporäre Konfigurationsdatei
+  fs.unlinkSync('vite.config.vercel.js');
 } catch (error) {
   console.error('Vite build failed:', error);
   process.exit(1);
