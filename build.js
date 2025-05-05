@@ -2,9 +2,12 @@ import { execSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
 
-// Führe den Vite-Build für das Frontend aus
-console.log('Erstelle Frontend-Build...');
-execSync('npm run build', { stdio: 'inherit' });
+
+// Kompiliere den Server-Code für Vercel-Deployment
+console.log('Erstelle Server-Build für Vercel...');
+execSync('esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist', { 
+  stdio: 'inherit' 
+});
 
 // Stelle sicher, dass das Verzeichnis für API-Funktionen existiert
 const apiDir = path.resolve('./api');
